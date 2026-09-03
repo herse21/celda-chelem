@@ -92,7 +92,7 @@ report['datasets']['context']={'source_id':'S50','source_crs':'EPSG:6365','displ
 relations={p['id']:{name:sum(shape(f['geometry']).intersects(locs[p['name']]) for f in d['features']) for name,d in collections_out.items() if name in ['coast','mangrove','wetlands','water']} for p in places}
 for f in collections_out['localities']['features']:f['properties']['relations']=relations[f['id']]
 report['datasets']['localities'].update(serial('localities',collections_out['localities']['features']))
-config={'focus_bounds':focus_bounds,'operational_bounds':op_bounds,'overview_bounds':list(unary_union([shape(f['geometry']) for f in states]).bounds),'places':places,'prepared_on':'2026-09-03','themes':['coast','localities','mangrove','wetlands','water'],'dataset_count':4,'theme_count':5}
+config={'focus_bounds':focus_bounds,'operational_bounds':op_bounds,'overview_bounds':[-90.4,20.95,-87.25,21.75],'navigation_bounds':[-90.55,20.65,-87.15,22.0],'places':places,'prepared_on':'2026-09-03','themes':['coast','localities','mangrove','wetlands','water'],'dataset_count':4,'theme_count':5}
 (out/'config.json').write_text(json.dumps(config,ensure_ascii=False,indent=2))
 core_sources=[byid[sid] for sid in ['S01','S02','S12','S13']]
 (out/'sources.json').write_text(json.dumps(core_sources,ensure_ascii=False,indent=2))

@@ -42,3 +42,9 @@ Consulta [arquitectura y preparación](docs/ARCHITECTURE.md), [entrega científi
 El explorador muestra Esri World Imagery después de la portada y mantiene los cinco temas oficiales encima. Las ventanas visuales de cada sección se centran en Chelem, Chuburná, Progreso, Yucalpetén o en el objeto seleccionado. Consulta [procedencia y fechas de imagen](docs/IMAGERY.md) y el registro legible por máquina en `public/data/imagery-sources.json`.
 
 La imagen es un mosaico de múltiples fechas. No se presenta como vista en vivo ni se utiliza para una comparación histórica o una medición científica.
+
+## Colaboración
+
+El código se publica para colaboración bajo licencia MIT; las fuentes y las imágenes conservan sus propias condiciones, detalladas en [DATA_LICENSES.md](DATA_LICENSES.md). Lee [CONTRIBUTING.md](CONTRIBUTING.md) antes de proponer cambios y utiliza issues y pull requests para mantener trazabilidad técnica y científica.
+
+La navegación está limitada al litoral de Yucatán y no permite alejarse hasta una vista mundial. Este límite de interfaz es operativo y no constituye una delimitación científica de celda.

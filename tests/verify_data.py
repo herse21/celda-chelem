@@ -18,6 +18,8 @@ def coords(g):
  yield from walk(c)
 config=load(data/'config.json');prep=load(data/'preparation.json')
 assert config['dataset_count']==4 and config['theme_count']==5
+assert config['overview_bounds']==[-90.4,20.95,-87.25,21.75]
+assert config['navigation_bounds']==[-90.55,20.65,-87.15,22.0]
 assert config['themes']==['coast','localities','mangrove','wetlands','water']
 seen=set()
 for name in config['themes']:

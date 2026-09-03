@@ -25,7 +25,7 @@ export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(p
     let cancelled = false;
     import('maplibre-gl').then(({ Map, Marker, ScaleControl }) => {
       if (cancelled || !host.current) return;
-      const m = new Map({ container: host.current, style: { version: 8, sources: {}, layers: [{ id: 'sea', type: 'background', paint: { 'background-color': '#091d2b' } }] }, bounds: props.config.overview_bounds, fitBoundsOptions: { padding: { top: 120, bottom: 60, left: window.innerWidth < 760 ? 0 : 330, right: 0 } }, minZoom: 5.2, maxZoom: 15, attributionControl: false, dragRotate: false, pitchWithRotate: false, canvasContextAttributes: { antialias: true } });
+      const m = new Map({ container: host.current, style: { version: 8, sources: {}, layers: [{ id: 'sea', type: 'background', paint: { 'background-color': '#091d2b' } }] }, bounds: props.config.overview_bounds, maxBounds: props.config.navigation_bounds, fitBoundsOptions: { padding: { top: 120, bottom: 60, left: window.innerWidth < 760 ? 0 : 330, right: 0 } }, minZoom: 9, maxZoom: 15, renderWorldCopies: false, attributionControl: false, dragRotate: false, pitchWithRotate: false, canvasContextAttributes: { antialias: true } });
       map.current = m;
       m.addControl(new ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-right');
       m.on('load', () => {

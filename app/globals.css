@@ -192,3 +192,5 @@ a { color:inherit; }
  .satellite-window { height:205px; } .satellite-media.is-compact .satellite-window { height:142px; }
  .basemap-choice button { min-height:44px; }
 }
+.map-footer { justify-content:flex-end; }
+@media(max-width:759px) { .map-footer { align-items:flex-end; } }

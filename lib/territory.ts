@@ -5,7 +5,7 @@ export type TerritoryFeature = Feature<Geometry, Record<string, unknown>>;
 export type TerritoryData = Record<ThemeId | 'context', FeatureCollection<Geometry, Record<string, unknown>>>;
 export type Visibility = Record<ThemeId, boolean>;
 export type Place = { id: string; name: string; coordinates: [number, number]; bounds: [number, number, number, number]; population: string; cvegeo: string };
-export type MapConfig = { focus_bounds: [number, number, number, number]; operational_bounds: [number, number, number, number]; overview_bounds: [number, number, number, number]; places: Place[]; prepared_on: string };
+export type MapConfig = { focus_bounds: [number, number, number, number]; operational_bounds: [number, number, number, number]; overview_bounds: [number, number, number, number]; navigation_bounds: [number, number, number, number]; places: Place[]; prepared_on: string };
 export type Source = { ID: string; Nombre: string; Institución: string; URL: string; Fecha: string; Actualización: string; CRS: string; Resolución: string; Licencia: string; Limitaciones: string; Tipo: string; Formato: string; Cobertura: string; Consulta: string; Enlaces_adicionales?: string[] };
 export const themes: { id: ThemeId; title: string; source: string; date: string; color: string; description: string; limitation: string }[] = [
   { id: 'coast', title: 'Costa de referencia', source: 'S01', date: 'INEGI · 2025', color: '#edc68b', description: 'El contacto costero publicado por INEGI, a partir de insumos de 2023–2025.', limitation: 'Una referencia cartográfica. No representa una serie de erosión.' },
