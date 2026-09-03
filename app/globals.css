@@ -157,3 +157,38 @@ a { color:inherit; }
 @media(max-width:379px) { .brand>svg { display:none; } .topbar { padding:0 10px; } .nav-button { width:37px; } .intro { left:20px; } .intro h1 { font-size:67px; } }
 @media(max-height:720px) { .intro { top:49%; } .intro h1 { font-size:64px; margin-bottom:18px; } .intro-statement { font-size:25px; margin-bottom:15px; } .intro-copy { margin-bottom:17px; } .intro .eyebrow { margin-bottom:15px; } .intro-note { margin-top:18px; } }
 @media(max-height:580px) { .intro-copy,.intro-note,.intro-coordinates { display:none; } .intro { top:52%; } .intro h1 { font-size:58px; } .layer-panel,.guide-panel { top:185px; max-height:calc(100dvh - 250px); } .territory-heading { top:86px; } .territory-heading h1 { font-size:25px; } .explorer { min-height:400px; } }
+/* Satellite reading — shown only after leaving the main cover. */
+.is-entered .map-vignette { background:linear-gradient(180deg,#071924d9 0%,#07192455 14%,transparent 34%,transparent 72%,#071924c7 100%),linear-gradient(90deg,#07192470,transparent 34%,transparent 76%,#07192433); }
+.basemap-choice { padding:12px 18px 16px; border-top:1px solid #aac1cb14; }
+.basemap-choice>span { display:block; color:#9db2ba; font-size:12px; margin-bottom:9px; }
+.basemap-choice>div { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.basemap-choice button { height:40px; padding:0 9px; gap:6px; font-size:12px; }
+.basemap-choice button svg { width:15px; }
+.basemap-choice>small { display:block; margin-top:9px; color:#8da5af; font-size:11px; line-height:1.45; }
+.satellite-media { margin:2px 0 25px; }
+.satellite-window { height:230px; position:relative; overflow:hidden; background:#263f45; border:1px solid #b8c9c82b; border-radius:8px; }
+.satellite-media.is-compact .satellite-window { height:150px; }
+.satellite-grid { position:absolute; display:grid; grid-template-columns:256px 256px; grid-template-rows:256px 256px; width:512px; height:512px; }
+.satellite-grid img { width:256px; height:256px; display:block; max-width:none; }
+.satellite-crosshair { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%); display:grid; place-items:center; width:31px; height:31px; border:1px solid #f0ca92; border-radius:50%; background:#0c2330bd; box-shadow:0 0 0 6px #0c233044; }
+.satellite-crosshair svg { width:14px; color:#f0ca92; }
+.satellite-live { position:absolute; top:11px; left:11px; padding:5px 7px; border-radius:3px; background:#0a202dd9; color:#f0ca92; font-size:10px; letter-spacing:1.2px; }
+.satellite-media figcaption { display:flex; flex-direction:column; gap:4px; margin-top:9px; color:#91aab5; font-size:11px; line-height:1.5; }
+.satellite-media figcaption b { color:#dbe2df; font-weight:500; }
+.satellite-media figcaption a { display:inline-flex; align-items:center; gap:5px; color:#d6ba8e; width:max-content; text-decoration:none; }
+.satellite-media figcaption svg { width:11px; }
+.imagery-note { margin:-6px 0 28px; padding:0 4px; color:#9eb3bb; font-size:12px; line-height:1.6; }
+.imagery-note b { color:#d8e0de; } .imagery-note p { margin:5px 0; }
+.guide-panel .satellite-media { margin:0 0 17px; }
+.guide-panel .satellite-media figcaption { font-size:10px; }
+.feature-sheet .satellite-window { height:155px; }
+.feature-sheet .satellite-media { margin-bottom:20px; }
+.place-list article { padding:22px 0; border-bottom:1px solid #fff2; }
+.place-list article>button { border:0; padding:15px 2px 0; }
+.place-list .satellite-media { margin-bottom:0; }
+.maplibregl-ctrl-attrib { display:none!important; }
+@media(max-width:759px) {
+ .is-entered .map-vignette { background:linear-gradient(180deg,#071924e8 0%,#0719245c 18%,transparent 42%,transparent 75%,#071924d0 100%); }
+ .satellite-window { height:205px; } .satellite-media.is-compact .satellite-window { height:142px; }
+ .basemap-choice button { min-height:44px; }
+}

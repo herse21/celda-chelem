@@ -38,4 +38,9 @@ manifest={x['path']:x['sha256'] for x in load(project/'evidence/download_manifes
 for rel in ['work/originals/linea_costa_2025.zip','work/originals/localidades_progreso.geojson','work/originals/mx_man20gw.zip','work/originals/mx_oc2020gw_http.zip']:
  assert sha(project/rel)==manifest[rel],rel
 assert (data/'metadata-evidence.zip').stat().st_size>0
+imagery=load(data/'imagery-sources.json')
+assert imagery['service']=='Esri World Imagery'
+assert len(imagery['verified_points'])==4
+assert {p['place'] for p in imagery['verified_points']}=={'Chelem','Chuburná','Progreso','Yucalpetén'}
+assert all(2023<=int(p['capture'][:4])<=2025 and p['source']=='Vantor' for p in imagery['verified_points'])
 print(f'OK: {len(seen)} elementos trazables; 4 datasets, 5 temas; originales conservados.')

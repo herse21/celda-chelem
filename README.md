@@ -36,3 +36,9 @@ pnpm build
 ```
 
 Consulta [arquitectura y preparación](docs/ARCHITECTURE.md), [entrega científica](docs/SCIENTIFIC_HANDOFF.md) y el [registro de preparación](docs/DATA_PREPARATION.json). La investigación, auditoría y originales se conservan en la entrega de Etapa A.
+
+## Imagen del territorio
+
+El explorador muestra Esri World Imagery después de la portada y mantiene los cinco temas oficiales encima. Las ventanas visuales de cada sección se centran en Chelem, Chuburná, Progreso, Yucalpetén o en el objeto seleccionado. Consulta [procedencia y fechas de imagen](docs/IMAGERY.md) y el registro legible por máquina en `public/data/imagery-sources.json`.
+
+La imagen es un mosaico de múltiples fechas. No se presenta como vista en vivo ni se utiliza para una comparación histórica o una medición científica.

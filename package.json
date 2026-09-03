@@ -9,7 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
-    "lint": "oxlint app components/explorer.tsx components/territory-map.tsx components/evidence-panel.tsx components/feature-details.tsx lib/territory.ts lib/guide.ts vite.config.ts",
+    "lint": "oxlint app components/explorer.tsx components/territory-map.tsx components/evidence-panel.tsx components/feature-details.tsx components/satellite-media.tsx lib/territory.ts lib/guide.ts lib/imagery.ts vite.config.ts",
     "format": "oxfmt"
   },
   "dependencies": {

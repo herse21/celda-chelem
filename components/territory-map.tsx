@@ -6,7 +6,7 @@ import type { FeatureCollection } from 'geojson';
 import { themes, type MapConfig, type TerritoryData, type TerritoryFeature, type Visibility } from '@/lib/territory';
 
 export type MapHandle = { home: () => void; zoom: (delta: number) => void; north: () => void; place: (id: string) => void };
-type Props = { config: MapConfig; data: TerritoryData; visibility: Visibility; entered: boolean; selected: TerritoryFeature | null; onSelect: (feature: TerritoryFeature | null) => void; onReady: () => void; onError: (message: string) => void };
+type Props = { config: MapConfig; data: TerritoryData; visibility: Visibility; imageryVisible: boolean; entered: boolean; selected: TerritoryFeature | null; onSelect: (feature: TerritoryFeature | null) => void; onReady: () => void; onError: (message: string) => void };
 export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(props, ref) {
   const host = useRef<HTMLDivElement>(null);
   const map = useRef<LibreMap | null>(null);
@@ -30,6 +30,8 @@ export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(p
       m.addControl(new ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-right');
       m.on('load', () => {
         if (cancelled) return;
+        m.addSource('satellite', { type: 'raster', tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 19, attribution: 'Esri, Vantor, Earthstar Geographics y GIS User Community' });
+        m.addLayer({ id: 'satellite', type: 'raster', source: 'satellite', layout: { visibility: 'none' }, paint: { 'raster-opacity': .92, 'raster-saturation': -.18, 'raster-contrast': .08 } });
         m.addSource('context', { type: 'geojson', data: props.data.context });
         m.addLayer({ id: 'context', type: 'fill', source: 'context', paint: { 'fill-color': '#243536', 'fill-opacity': 1 } });
         m.addLayer({ id: 'context-edge', type: 'line', source: 'context', paint: { 'line-color': '#466162', 'line-width': .7, 'line-opacity': .45 } });
@@ -74,7 +76,11 @@ export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(p
     if (!loaded || !map.current) return;
     for (const theme of themes) for (const id of [theme.id, `${theme.id}-edge`, `${theme.id}-hit`]) if (map.current.getLayer(id)) map.current.setLayoutProperty(id, 'visibility', props.visibility[theme.id] ? 'visible' : 'none');
     markers.current.forEach(m => { m.getElement().style.display = props.entered && props.visibility.localities && (map.current?.getZoom() ?? 0) >= 9.4 ? 'block' : 'none'; });
-  }, [props.visibility, props.entered, loaded]);
+    const showImagery=props.entered && props.imageryVisible;
+    map.current.setLayoutProperty('satellite','visibility',showImagery?'visible':'none');
+    map.current.setPaintProperty('context','fill-opacity',showImagery?0:1);
+    map.current.setPaintProperty('context-edge','line-opacity',showImagery ? .2 : .45);
+  }, [props.visibility, props.entered, props.imageryVisible, loaded]);
   useEffect(() => {
     if (!loaded || !map.current) return;
     if (props.entered) fit(props.config.focus_bounds, true, true);
