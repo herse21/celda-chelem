@@ -15,6 +15,13 @@ type Props = {
   onZoom: (min: boolean, max: boolean) => void; onImageryError: () => void;
 };
 const motion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
+const MAP_MIN_ZOOM = 10;
+function interfaceNavigationBounds(config: MapConfig): Bounds {
+  const [west, south, east, north] = config.operational_bounds;
+  const lonPadding = Math.max(0.018, (east - west) * 0.12);
+  const latPadding = Math.max(0.012, (north - south) * 0.12);
+  return [west - lonPadding, south - latPadding, east + lonPadding, north + latPadding];
+}
 export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(props, ref) {
   const host = useRef<HTMLDivElement>(null);
   const map = useRef<LibreMap | null>(null);
@@ -54,7 +61,7 @@ export const TerritoryMap = forwardRef<MapHandle, Props>(function TerritoryMap(p
         container: host.current,
         style: { version: 8, sources: {}, layers: [{ id: 'sea', type: 'background', paint: { 'background-color': '#dbe6e4' } }] },
         bounds: props.config.focus_bounds, fitBoundsOptions: { padding: padding() },
-        maxBounds: props.config.navigation_bounds, minZoom: 9, maxZoom: 16,
+        maxBounds: interfaceNavigationBounds(props.config), minZoom: MAP_MIN_ZOOM, maxZoom: 16,
         renderWorldCopies: false, attributionControl: false, dragRotate: false, pitchWithRotate: false,
         canvasContextAttributes: { antialias: false }, fadeDuration: 180,
       });

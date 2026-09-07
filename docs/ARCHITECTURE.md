@@ -25,7 +25,7 @@ La ventana de auditoría fue `[-89.84502487, 21.24884325, -89.62435775, 21.34922
 
 Este encuadre es una decisión operativa de preparación. Se muestra como **Área preliminar de estudio**, no como Celda Chelem científicamente delimitada; ofrece cobertura parcial de laguna y zona marina. SCI01–SCI03 continúan bloqueando límites e interpretaciones científicamente validados.
 
-La navegación se restringe al litoral de Yucatán mediante `navigation_bounds` y un zoom mínimo de 9; además, se desactivan las copias repetidas del mundo. Estos topes evitan que la experiencia se aleje hasta una vista mundial. Son límites de interfaz y no sustituyen la delimitación científica de la celda.
+La navegación se restringe al corredor litoral preparado: la interfaz deriva un rectángulo a partir de `operational_bounds`, con un margen de 12 %, y usa un zoom mínimo de 10; además, se desactivan las copias repetidas del mundo. Estos topes evitan que la experiencia se aleje del área de Chelem–Chuburná–Progreso. Son límites de interfaz y no sustituyen la delimitación científica de la celda.
 
 ## Rendimiento y acceso
 
