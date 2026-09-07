@@ -1,29 +1,69 @@
 'use client';
-import { ExternalLink, Satellite } from 'lucide-react';
+
+import { memo, useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { closestImagery, imagery, imageryService, type ImageryPlace } from '@/lib/imagery';
-function tilePoint([lon,lat]:[number,number],z:number) {
-  const n=2**z, x=(lon+180)/360*n, rad=lat*Math.PI/180, y=(1-Math.asinh(Math.tan(rad))/Math.PI)/2*n;
-  return { x:Math.floor(x), y:Math.floor(y), fx:x-Math.floor(x), fy:y-Math.floor(y) };
-}
-export function geometryCenter(geometry: { coordinates?: unknown }): [number,number] | null {
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  function visit(value:unknown) {
-    if (!Array.isArray(value)) return;
-    if (value.length>=2 && typeof value[0]==='number' && typeof value[1]==='number') { minX=Math.min(minX,value[0]);maxX=Math.max(maxX,value[0]);minY=Math.min(minY,value[1]);maxY=Math.max(maxY,value[1]); return; }
-    value.forEach(visit);
-  }
-  visit(geometry.coordinates);
-  return Number.isFinite(minX) ? [(minX+maxX)/2,(minY+maxY)/2] : null;
-}
-export function SatelliteMedia({ place='chelem', coordinates, title, compact=false }: { place?:ImageryPlace; coordinates?:[number,number]; title?:string; compact?:boolean }) {
-  const center=coordinates ?? imagery[place].coordinates, nearest=coordinates ? closestImagery(coordinates) : imagery[place], z=16, t=tilePoint(center,z);
-  return <figure className={`satellite-media ${compact?'is-compact':''}`}>
-    <div className="satellite-window">
-      <div className="satellite-grid" style={{left:`calc(50% - ${t.fx*256}px)`,top:`calc(50% - ${t.fy*256}px)`}}>
-        {[0,1].flatMap(dy=>[0,1].map(dx=><img // oxlint-disable-line next/no-img-element -- provider-served map tiles must retain their native grid and URL
-          key={`${dx}-${dy}`} aria-hidden="true" alt="" src={`${imageryService}/tile/${z}/${t.y+dy}/${t.x+dx}`} />))}
-      </div><span className="satellite-crosshair"><Satellite /></span><span className="satellite-live">IMAGEN REAL</span>
+import { imageryTiles, type Bounds, type Point } from '@/lib/view';
+
+export const SatelliteMedia = memo(function SatelliteMedia({
+  place = 'chelem', coordinates, bounds, title, compact = false,
+}: { place?: ImageryPlace; coordinates?: Point; bounds?: Bounds; title?: string; compact?: boolean }) {
+  const frame = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [visible, setVisible] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState<Set<string>>(() => new Set());
+  const center = coordinates ?? imagery[place].coordinates;
+  const nearest = coordinates ? closestImagery(coordinates) : imagery[place];
+  const name = title ?? nearest.name;
+  const tiles = imageryTiles(center, size.width, size.height, bounds);
+  const tileKey = (t: (typeof tiles)[number]) => t.zoom + '/' + t.y + '/' + t.x;
+  const ready = tiles.length > 0 && tiles.every(t => loaded.has(tileKey(t)));
+  useEffect(() => {
+    const node = frame.current;
+    if (!node) return;
+    const resize = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      setSize({ width: Math.ceil(width), height: Math.ceil(height) });
+    });
+    resize.observe(node);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); observer.disconnect(); }
+    }, { rootMargin: '120px' });
+    observer.observe(node);
+    return () => { resize.disconnect(); observer.disconnect(); };
+  }, []);
+  useEffect(() => {
+    if (!visible || ready || failed) return;
+    const timeout = window.setTimeout(() => setFailed(true), 15000);
+    return () => window.clearTimeout(timeout);
+  }, [visible, ready, failed, attempt]);
+  return <figure aria-label={'Vista satelital de ' + name + '. Mosaico de distintas fechas.'} className={'satellite-media' + (compact ? ' is-compact' : '')}>
+    <div ref={frame} className="satellite-window">
+      {visible && !failed && <div className={'satellite-grid' + (ready ? ' is-ready' : '')} key={attempt}>
+        {tiles.map(t => <img // oxlint-disable-line next/no-img-element -- unmodified provider tiles, laid out at native 256px
+          // Provider-served geographic tiles remain unmodified and keep their native grid.
+          key={tileKey(t)} alt="" aria-hidden="true" width={256} height={256} decoding="async"
+          src={imageryService + '/tile/' + tileKey(t)}
+          style={{ left: t.left, top: t.top }}
+          onLoad={() => setLoaded(current => new Set(current).add(tileKey(t)))}
+          onError={() => setFailed(true)}
+        />)}
+      </div>}
+      {(!ready || failed) && <output className="media-state">
+        <span>{failed ? 'Imagen no disponible' : 'Cargando vista satelital'}</span>
+        {failed && <Button variant="ghost" onClick={() => { setLoaded(new Set()); setFailed(false); setAttempt(n => n + 1); }}><RotateCcw /> Reintentar</Button>}
+      </output>}
     </div>
-    <figcaption><span><b>{title ?? nearest.name}</b> · {coordinates ? `referencia temporal próxima: ${nearest.name}, ${nearest.capture}` : `captura ${nearest.capture}`}</span><span>{nearest.source} · {nearest.sensor} · {nearest.resolution}</span><a href={`${imageryService}?f=pjson`} target="_blank" rel="noreferrer">Esri World Imagery <ExternalLink /></a></figcaption>
+    <figcaption>
+      <span>{name} <span className="caption-divider">/</span> Vista satelital</span>
+      <details className="image-provenance"><summary>Fecha y procedencia</summary>
+        <p>Referencia verificada en {nearest.name}: {nearest.capture}. La fecha puede variar dentro de esta vista; no es una imagen en vivo.</p>
+        <p>{nearest.source} · {nearest.sensor} · {nearest.resolution} en el punto de referencia.</p>
+      </details>
+      <a href={imageryService + '?f=pjson'} target="_blank" rel="noreferrer">© Esri · Vantor · Earthstar <ArrowUpRight /></a>
+    </figcaption>
   </figure>;
-}
+});
